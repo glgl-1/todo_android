@@ -21,7 +21,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // Property
   late TextEditingController controller; // 입력창
-  late TextEditingController searchController; // 검색창
   late bool checkBox; // 완료여부에 필요한 체크박스
   late bool isDarkMode; // Light & Dark Mode Change
   late List<String> items; // dropdown item
@@ -37,7 +36,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     controller = TextEditingController();
-    searchController = TextEditingController();
     checkBox = false;
     isDarkMode = false;
     items = ['All', '완료', '미완료'];
@@ -93,34 +91,6 @@ class _HomeState extends State<Home> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.1, 
-                              width: MediaQuery.of(context).size.width * 0.7,   
-                              child: 
-                              TextField(
-                                controller: searchController,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      search = searchController.text;
-                                      setState(() {});
-                                    },
-                                    icon: Icon(Icons.search_rounded),
-                                  ),
-                                  labelText: '일정 검색',
-                                  labelStyle: const TextStyle(
-                                    fontSize: 16.0,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: BorderSide(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
                             child: DropdownButton(
                               value: dropdownvalue,
                               icon: const Icon(Icons.keyboard_arrow_down),
@@ -152,14 +122,11 @@ class _HomeState extends State<Home> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8, 
                 child: FutureBuilder(
-                  future: 
-                  search.isNotEmpty
-                      ? searchHandler.serchTodoList(search)
-                      :(dropdownvalue == '완료'
+                  future:dropdownvalue == '완료'
                           ? queryHandler.finishTodoList() // 드롭다운에서 '완료' 선택 시
-                          : (dropdownvalue == '미완료'
+                          : dropdownvalue == '미완료'
                               ? queryHandler.notfinishTodoList() // 드롭다운에서 '미완료' 선택 시
-                              : queryHandler.queryTodoList())),
+                              : queryHandler.queryTodoList(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(
@@ -175,7 +142,7 @@ class _HomeState extends State<Home> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              Get.to(() => EditPage(), arguments: [
+                              Get.to(() => const EditPage(), arguments: [
                                 snapshot.data![index].seq,
                                 snapshot.data![index].contents,
                                 snapshot.data![index].checkBox,
