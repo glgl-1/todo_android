@@ -4,9 +4,8 @@ import 'dart:async';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
-  final Function(ThemeMode) onChangeTheme;
 
-  const SplashScreen({super.key, required this.onChangeTheme});
+  const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -27,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            Home(onChangeTheme: widget.onChangeTheme),
+            Home(),
         transitionsBuilder:
             (context, animation, secondaryAnimation, child) {
           return FadeTransition(

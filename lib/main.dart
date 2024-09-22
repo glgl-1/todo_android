@@ -14,12 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themMode = ThemeMode.system; // 초기값
-
-  _chageThemMode(ThemeMode themeMode) {
-    _themMode = themeMode;   // _theMode에다가 내가 만든themeMode를 넣음
-    setState(() {});
-  }
 
   static const seedColor = Colors.blue;
 
@@ -27,7 +21,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      themeMode: _themMode, // 기본값은 _themMode가 가지고 있음
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true, // 머터리얼3 디자인 사용
@@ -38,8 +33,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
         colorSchemeSeed: seedColor,
       ),
-      home: SplashScreen(onChangeTheme: _chageThemMode)
-      // SplashScreen(onChangeTheme: _chageThemMode), // 초기 화면을 SplashScreen으로 설정
+      home: const SplashScreen()
     );
   }
 }

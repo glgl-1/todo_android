@@ -6,13 +6,11 @@ import 'package:todo_app/view/edit_page.dart';
 import 'package:todo_app/view/remove_page.dart';
 import 'package:todo_app/vm/check_handler.dart';
 import 'package:todo_app/vm/query_handler.dart';
-import 'package:todo_app/vm/serch_handler.dart';
 import 'package:todo_app/vm/trush_handler.dart';
 import '../model/myTodoList.dart';
 
 class Home extends StatefulWidget {
-  final Function(ThemeMode) onChangeTheme;
-  const Home({super.key, required this.onChangeTheme});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -23,14 +21,10 @@ class _HomeState extends State<Home> {
   late TextEditingController controller; // 입력창
   late bool checkBox; // 완료여부에 필요한 체크박스
   late bool isDarkMode; // Light & Dark Mode Change
-  late List<String> items; // dropdown item
-  late String dropdownvalue;
-  late String search;
 
   QueryHandler queryHandler = QueryHandler();
   TrushHandler trushHandler = TrushHandler();
   CheckHandler checkHandler = CheckHandler();
-  SearchHandler searchHandler = SearchHandler();
 
   @override
   void initState() {
@@ -38,95 +32,53 @@ class _HomeState extends State<Home> {
     controller = TextEditingController();
     checkBox = false;
     isDarkMode = false;
-    items = ['All', '완료', '미완료'];
-    dropdownvalue = 'All';
-    search = '';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('오늘 잊은거 없나?'),
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          IconButton(
-            onPressed: () {
-              Get.to(
-                () => const RemovePage(),
-              )!.then((value) => reloadData(),);
-            },
-            icon: const Icon(Icons.delete_forever_outlined),
+        title: const Text(
+          '오늘 잊은거 없나?',
+                    style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          IconButton(
-            onPressed: () {
-              _chageThemMode(); // Dark & Light mode Change
-            },
-            icon: Icon(
-              isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              buttonDialog();
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.1, // 화면 높이의 10%
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownButton(
-                              value: dropdownvalue,
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              items: items.map(
-                                (String items) {
-                                  return DropdownMenuItem(
-                                    value: items,
-                                    child: Text(
-                                      items,
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.tertiary,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ).toList(),
-                              onChanged: (value) {
-                                dropdownvalue = value!;
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      buttonDialog();
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Get.to(
+                        () => const RemovePage(),
+                      )!.then(
+                        (value) => reloadData(),
+                      );
+                    },
+                    icon: const Icon(Icons.delete_forever_outlined),
+                  ),
+                ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.8, 
+                height: MediaQuery.of(context).size.height * 0.8,
                 child: FutureBuilder(
-                  future:dropdownvalue == '완료'
-                          ? queryHandler.finishTodoList() // 드롭다운에서 '완료' 선택 시
-                          : dropdownvalue == '미완료'
-                              ? queryHandler.notfinishTodoList() // 드롭다운에서 '미완료' 선택 시
-                              : queryHandler.queryTodoList(),
+                  future: queryHandler.queryTodoList(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(
@@ -135,8 +87,7 @@ class _HomeState extends State<Home> {
                           style: TextStyle(fontSize: 18.0, color: Colors.grey),
                         ),
                       );
-                    } 
-                    else if (snapshot.hasData) {
+                    } else if (snapshot.hasData) {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
@@ -147,65 +98,70 @@ class _HomeState extends State<Home> {
                                 snapshot.data![index].contents,
                                 snapshot.data![index].checkBox,
                                 snapshot.data![index].insertDate
-                              ])!.then((value) => reloadData(),);
+                              ])!.then(
+                                (value) => reloadData(),
+                              );
                             },
-                            child: ListTile(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Checkbox(
-                                    value:snapshot.data![index].checkBox == 'T',
-                                    onChanged: (value) {
-                                      _finishTodo(value, snapshot.data![index]);
-                                      setState(() {});
-                                    },
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      '${snapshot.data![index].contents}',
-                                      style: TextStyle(
-                                        decoration: snapshot.data![index].checkBox == 'T'
-                                                ? TextDecoration.lineThrough
-                                                : null,
-                                      ),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.height * 0.3,
+                              child: ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Checkbox(
+                                      value: snapshot.data![index].checkBox == 'T',
+                                      onChanged: (value) {
+                                        checkBox = value!;
+                                        setState(() {});
+                                        _finishTodo(value, snapshot.data![index]);
+                                      },
                                     ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        '등록 : ${DateFormat.yMMMd().add_jm().format(DateTime.parse(snapshot.data![index].insertDate.toString()))}',
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.grey,
+                                    Expanded(
+                                      child: Text(
+                                        '${snapshot.data![index].contents}',
+                                        style: TextStyle(
+                                          decoration:
+                                              snapshot.data![index].checkBox ==
+                                                      'T'
+                                                  ? TextDecoration.lineThrough
+                                                  : null,
                                         ),
                                       ),
-                                      Visibility(
-                                        visible:
-                                            snapshot.data![index].checkBox ==
-                                                'T',
-                                        child: Text(
-                                          snapshot.data![index].checkBox == 'T'
-                                              ? '완료 : ${DateFormat.yMMMd().add_jm().format(DateTime.parse(snapshot.data![index].finishDate.toString()))}'
-                                              : '미완료',
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '등록 : ${DateFormat.yMMMd().add_jm().format(DateTime.parse(snapshot.data![index].insertDate.toString()))}',
                                           style: const TextStyle(
                                             fontSize: 12.0,
                                             color: Colors.grey,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      makedeletDate(snapshot.data![index].seq!);
-                                      // moveToTrush(snapshot.data![index].seq!);
-                                      showDialog('삭제하기', '휴지통에 넣으시겠습니까?', '삭제');
-                                    },
-                                    icon:
-                                        const Icon(Icons.delete_sweep_outlined),
-                                  ),
-                                ],
+                                        Visibility(
+                                          visible:
+                                              snapshot.data![index].checkBox =='T',
+                                          child: Text(
+                                            snapshot.data![index].checkBox == 'T'
+                                                ? '완료 : ${DateFormat.yMMMd().add_jm().format(DateTime.parse(snapshot.data![index].finishDate.toString()))}'
+                                                : '미완료',
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog('삭제하기', '휴지통에 넣으시겠습니까?', '삭제',snapshot.data![index].seq!);
+                                      },
+                                      icon:
+                                          const Icon(Icons.delete_sweep_outlined),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -225,6 +181,7 @@ class _HomeState extends State<Home> {
   }
 
   // --- Functions ---
+
   reloadData() {
     setState(() {});
   }
@@ -246,12 +203,6 @@ class _HomeState extends State<Home> {
       contents: controller.text.trim(),
     );
     await queryHandler.insertMyTodoList(mytodolist);
-  }
-
-  _chageThemMode() {
-    // Mode Change
-    isDarkMode = !isDarkMode;
-    widget.onChangeTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
   }
 
   _finishTodo(value, Mytodolist mytodo) async {
@@ -307,7 +258,7 @@ class _HomeState extends State<Home> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(),
+                    borderSide: const BorderSide(),
                   ),
                 ),
               ),
@@ -321,7 +272,6 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  controller.text = '';
                   Get.back();
                 },
                 child: const Text('취소'),
@@ -361,7 +311,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  showDialog(titleText, checkMessage, checkplan) {
+  showDialog(titleText, checkMessage, checkplan,seq) {
     // 데이터유무 체크 후 showDialog를 통해 데이터 추가
     Get.defaultDialog(
       title: titleText,
@@ -373,7 +323,7 @@ class _HomeState extends State<Home> {
           onPressed: () {
             if (checkplan == '일정추가') {
               Get.back();
-            }else{
+            } if(titleText == '삭제하기') {
               Get.back();
             }
             setState(() {});
@@ -386,6 +336,7 @@ class _HomeState extends State<Home> {
         TextButton(
           onPressed: () {
             if (checkplan == '삭제') {
+              makedeletDate(seq);
               Get.back();
               errorSnackBar(
                 '삭제완료',

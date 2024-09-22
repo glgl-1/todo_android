@@ -48,9 +48,6 @@ dependencies:
   path: ^1.9.0
   # lottie
   lottie: ^3.1.2
-  # 홈화면 위젯
-  home_widget: ^0.7.0
-
 
 
 dev_dependencies:

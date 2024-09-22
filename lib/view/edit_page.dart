@@ -33,6 +33,7 @@ class _EditPageState extends State<EditPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -27,89 +27,107 @@ class _SecondPageState extends State<RemovePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('휴지통'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog('선택한 일정 복구하기', '선택한 일정을 복구 하시겠습니까??', '복구하기');
-            }, 
-            icon: const Icon(Icons.replay)),
-          IconButton(
-            onPressed: () {
-              showDialog('선택한 일정 삭제하기', '선택한 일정을 삭제하시겠습니까?', '전체삭제');
-            },
-            icon: const Icon(Icons.delete_forever),
+        appBar: AppBar(
+          title: const Text(
+            '휴지통',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ],
-      ),
-      body: FutureBuilder(
-        future: trushHandler.queryTrushTodoList(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Checkbox(
-                        value: checkBoxList[index],
-                        onChanged: (value) {
-                          checkBoxList[index] = value!;
-                          if (checkBoxList[index]) {
-                            selectTodo.add(snapshot.data![index].mytodo_seq);
-                          } else {
-                            selectTodo.remove(snapshot.data![index].mytodo_seq);
-                          }
-                          setState(() {});
-                        },
-                      ),
-                      Expanded(
-                        child: Text(
-                          snapshot.data![index].contents.toString(),
-                        ),
-                      ),
-                      Text(
-                        '삭제날짜 : ${snapshot.data![index].deletDate.toString()}',
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey,
-                        ),
-                      )
-                    ],
-                  ),
-                );
+          centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showDialog('선택한 일정 복구하기', '선택한 일정을 복구 하시겠습니까??', '복구하기');
+                },
+                icon: const Icon(Icons.replay)),
+            IconButton(
+              onPressed: () {
+                showDialog('선택한 일정 삭제하기', '선택한 일정을 삭제하시겠습니까?', '전체삭제');
               },
-            );
-          } else {
-            return Text('휴지통이 비어 있습니다.');
-          }
-        },
-      ),
-    );
+              icon: const Icon(Icons.delete_forever),
+            ),
+          ],
+        ),
+        body: FutureBuilder(
+          future: trushHandler.queryTrushTodoList(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              if (checkBoxList.length != snapshot.data!.length) {
+                checkBoxList =
+                    List.generate(snapshot.data!.length, (index) => false);
+              }
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: checkBoxList[index],
+                          onChanged: (value) {
+                            checkBoxList[index] = value!;
+                            if (checkBoxList[index]) {
+                              selectTodo.add(snapshot.data![index].mytodo_seq);
+                            } else {
+                              selectTodo
+                                  .remove(snapshot.data![index].mytodo_seq);
+                            }
+                            setState(() {});
+                          },
+                        ),
+                        Expanded(
+                          child: Text(
+                            snapshot.data![index].contents.toString(),
+                          ),
+                        ),
+                        Text(
+                          '삭제날짜 : ${snapshot.data![index].deletDate.toString()}',
+                          style: const TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // 데이터 로딩 중일 때
+            } else {
+              return const Center(
+                child: Text(
+                  '휴지통이 비어 있습니다.',
+                  style: TextStyle(fontSize: 18.0, color: Colors.grey),
+                ),
+              ); // 데이터가 없을 때
+            }
+          },
+        ));
   }
 
   // --- Functions ---
 
   deletAllTodo() async {
-  for (int i = 0; i < selectTodo.length; i++) {
-    await trushHandler.deletTodoList(selectTodo[i]);
-  }
-  selectTodo.clear();
-}
-
-recoveryTodo() async {
-  for (int i = 0; i < selectTodo.length; i++) {
-    await trushHandler.recoveryTodoList(selectTodo[i]);
-    await trushHandler.deleteFromTrash(selectTodo[i]);
+    for (int i = 0; i < selectTodo.length; i++) {
+      await trushHandler.deletTodoList(selectTodo[i]);
+    }
+    selectTodo.clear();
+    await reloadData();
+    setState(() {});
   }
 
-  selectTodo.clear();
-  setState(() {});
-}
-
+  recoveryTodo() async {
+    for (int i = 0; i < selectTodo.length; i++) {
+      await trushHandler.recoveryTodoList(selectTodo[i]);
+      await trushHandler.deleteFromTrash(selectTodo[i]);
+    }
+    selectTodo.clear();
+    await reloadData();
+    setState(() {});
+  }
 
   reloadData() async {
     var data = await trushHandler.queryTrushTodoList();
@@ -135,19 +153,13 @@ recoveryTodo() async {
         ),
         TextButton(
           onPressed: () {
-            if(titleText == '선택한 일정 복구하기'){
+            if (titleText == '선택한 일정 복구하기') {
               recoveryTodo();
               setState(() {});
               Get.back();
-            }else{
-            deletAllTodo();
-            Get.back();
-            // errorSnackBar(
-            //   '삭제완료',
-            //   '선택한 일정이 삭제되었습니다',
-            //   Theme.of(context).colorScheme.error,
-            //   Theme.of(context).colorScheme.onError,
-            // );
+            } else {
+              deletAllTodo();
+              Get.back();
             }
             setState(() {});
           },
@@ -159,15 +171,4 @@ recoveryTodo() async {
       ],
     );
   }
-
-  // errorSnackBar(deletMessage, memoMessage, titleColor, textColor) {
-  //   // 파라미터를 이용하여 에러스넥바 데이터 비었을때 삭제됬을떄 알림
-  //   Get.snackbar(deletMessage, memoMessage,
-  //       snackPosition: SnackPosition.BOTTOM, // snackBar 나오는 위치
-  //       duration: const Duration(seconds: 1), // 유지되는 시간
-  //       backgroundColor: titleColor, // snackBar 색
-  //       colorText: textColor // 스넥바 글씨
-  //       );
-  // }
-
 }// END
