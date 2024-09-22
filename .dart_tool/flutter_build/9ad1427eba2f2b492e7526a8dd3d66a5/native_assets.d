@@ -1,0 +1,1 @@
+ /Users/nox/Documents/LrZl/git_single/android/todo_android/.dart_tool/flutter_build/9ad1427eba2f2b492e7526a8dd3d66a5/native_assets.yaml: 
