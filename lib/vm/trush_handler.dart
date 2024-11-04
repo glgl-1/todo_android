@@ -46,9 +46,9 @@ Future<int> insertTrushTodo(TrushTodo trush_todo) async {
 Future<List<TrushTodo>> queryTrushTodoList() async {
   final Database db = await databaseHandler.initializeDB();
   final List<Map<String, Object?>> queryTrushTodoList = await db.rawQuery("""
-    SELECT r.mytodo_seq, t.contents, r.deletDate
-    FROM trushtodolist r, todolist t
-    WHERE r.mytodo_seq = t.seq
+    select r.mytodo_seq, t.contents, r.deletDate
+    from trushtodolist r, todolist t
+    where r.mytodo_seq = t.seq
   """);
   return queryTrushTodoList.map((e) => TrushTodo.fromMap(e)).toList();
 }
@@ -67,9 +67,9 @@ Future<List<TrushTodo>> queryTrushTodoList() async {
 Future<void> recoveryTodoList(int todoSeq) async {
   final Database db = await databaseHandler.initializeDB();
   await db.rawUpdate('''
-    UPDATE todolist
-    SET deletDate = NULL
-    WHERE seq = ?
+    update todolist
+    set deletDate = NULL
+    where seq = ?
   ''', [todoSeq]);
 }
 
@@ -77,7 +77,7 @@ Future<void> deleteFromTrash(int todoSeq) async {
   final Database db = await databaseHandler.initializeDB();
   await db.rawDelete(
     """
-    DELETE FROM trushtodolist WHERE mytodo_seq = ?
+    delete from trushtodolist where mytodo_seq = ?
     """, [todoSeq]
   );
 }

@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Lottie.asset(
           'images/Animation - 1726623279241.json',
-          width: 400,
+          width: MediaQuery.of(context).size.width,
           height: 400,
           fit: BoxFit.cover,
         ),

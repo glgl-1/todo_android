@@ -1,13 +1,13 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="com.simple.todo_list_app"
-4    android:versionCode="1"
+4    android:versionCode="2"
 5    android:versionName="1.0.0" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
 8-->/Users/nox/Documents/LrZl/git_single/android/todo_android/android/app/src/main/AndroidManifest.xml
-9        android:targetSdkVersion="34" />
+9        android:targetSdkVersion="35" />
 9-->/Users/nox/Documents/LrZl/git_single/android/todo_android/android/app/src/main/AndroidManifest.xml
 10    <!--
 11         Required to query activities that can process text, see:

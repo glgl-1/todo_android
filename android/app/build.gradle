@@ -24,7 +24,7 @@ if (flutterVersionCode == null) {
 
 def flutterVersionName = localProperties.getProperty("flutter.versionName")
 if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
+    flutterVersionName = "1.0.1"
 }
 
 android {
@@ -39,8 +39,8 @@ android {
 
     defaultConfig {
         applicationId = "com.simple.todo_list_app"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 21
+        targetSdk = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }

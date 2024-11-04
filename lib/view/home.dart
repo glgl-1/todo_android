@@ -77,6 +77,7 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8,
+                width: MediaQuery.of(context).size.width,
                 child: FutureBuilder(
                   future: queryHandler.queryTodoList(),
                   builder: (context, snapshot) {
