@@ -49,4 +49,4 @@ The following packages were used to build the Todo List App:
 
 ## Download
 The app is available on the Google Play Store. Click the link below to download:
-[Download Todo List App on Google Play](https://play.google.com/store/apps/details?id=com.todoist)
+[Download Todo List App on Google Play]([https://play.google.com/store/apps/details?id=com.todoist](https://play.google.com/store/apps/details?id=com.simple.todo_list_app&pcampaignid=web_share))
