@@ -2,8 +2,8 @@
 오늘잊은거없나(No More Forgetting Today)
 
 ## Project Status
-- Start Date: YYYY-MM-DD
-- Last Updated: 2025-04-06
+- Start Date: 2024-09-08
+- End Date: 2024-11-10
 
 ## Table of Contents
 - [Overview](#overview)
