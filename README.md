@@ -1,16 +1,52 @@
-# todo_list_app
+# Todo List App
+오늘잊은거없나(No More Forgetting Today)
 
-A new Flutter project.
+## Project Status
+- Start Date: YYYY-MM-DD
+- Last Updated: 2025-04-06
 
-## Getting Started
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Packages Used](#packages-used)
+- [Download](#download)
 
-This project is a starting point for a Flutter application.
+## Overview
+Todo List App is a simple and intuitive task management application designed to help users stay organized and productive. With this app, you can easily add, edit, and delete tasks, set deadlines, and track your progress.
 
-A few resources to get you started if this is your first Flutter project:
+## Features
+- Add, edit, and delete tasks.
+- Set deadlines and reminders for tasks.
+- Organize tasks by categories or priorities.
+- Simple and clean user interface.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Technologies Used
+- **Framework**: Flutter
+- **Programming Language**: Dart
+- **Database**: SQLite
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Packages Used
+The following packages were used to build the Todo List App:
+
+### **For state management**
+- `get: ^4.6.6`
+
+### **For date formatting**
+- `intl: ^0.19.0`
+
+### **For SQLite integration**
+- `sqflite: ^2.3.3+1`
+
+### **For file path management**
+- `path: ^1.9.0`
+
+### **For animated illustrations**
+- `lottie: ^3.1.2`
+
+### **For multilingual support**
+- `flutter_localization: ^0.3.0`
+
+## Download
+The app is available on the Google Play Store. Click the link below to download:
+[Download Todo List App on Google Play](https://play.google.com/store/apps/details?id=com.todoist)
